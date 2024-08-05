@@ -63,7 +63,7 @@ df.pheno_autumn<-df.pheno_autumn %>%
 #(2) merge the phenology data
 #-------------------
 df.pheno<-full_join(df.pheno_spring,df.pheno_autumn)
-#average the phenological data in differnt years for each tre species:
+#average the phenological data in differnt years for each species:
 df.pheno_species_sum<-df.pheno %>%
   group_by(species_id,crown_pos,DOY)%>%
   # summarise(spring_pheno1=mean(spring_pheno1,na.rm = T))
@@ -77,13 +77,13 @@ find_doy_range<-function(df,pheno_name){
     select(species_id:DOY,pheno_name)
   names(df_subset)<-c("species_id","crown_pos","DOY","pheno")
   df_start<-df_subset %>%
-    filter(pheno==0) %>%
+    filter(pheno>0 & pheno<100) %>%
     group_by(species_id,crown_pos)%>%
     summarise(pheno_start=min(DOY))
   df_end<-df_subset %>%
     filter(pheno==100) %>%
     group_by(species_id,crown_pos)%>%
-    summarise(pheno_end=max(DOY))
+    summarise(pheno_end=min(DOY))
   #
   df_pheno<-left_join(df_start,df_end)
   #names:
